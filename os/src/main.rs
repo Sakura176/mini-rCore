@@ -1,4 +1,6 @@
-//! The main module
+/*!
+The main module
+*/
 
 #![no_main]
 #![no_std]
@@ -18,7 +20,9 @@ pub fn clear_bss() {
         fn sbss();
         fn ebss();
     }
-    (sbss as usize..ebss as usize).for_each(|a| unsafe { (a as *mut u8).write_volatile(0) });
+    // 遍历BSS段并逐地址写 0
+    (sbss as usize..ebss as usize)
+        .for_each(|a| unsafe { (a as *mut u8).write_volatile(0) });
 }
 
 #[no_mangle]
