@@ -1,4 +1,4 @@
-# building
+# Building
 TARGET := riscv64gc-unknown-none-elf
 MODE := release
 KERNEL_ELF := target/$(TARGET)/$(MODE)/os
@@ -55,7 +55,8 @@ disasm-vim: kernel
 
 run: run-inner
 
-QEMU_ARGS := -machine virt -nographic \
+QEMU_ARGS := -machine virt \
+			 -nographic \
 			 -bios $(BOOTLOADER) \
 			 -device loader,file=$(KERNEL_BIN),addr=$(KERNEL_ENTRY_PA)
 
@@ -78,4 +79,4 @@ gdbserver: qemu-version-check build
 gdbclient:
 	@riscv64-unknown-elf-gdb -ex 'file $(KERNEL_ELF)' -ex 'set arch riscv:rv64' -ex 'target remote localhost:1234'
 
-.PHONY: build env kernel clean disasm disasm-vim run-inner gdbserver gdbclient qemu-version-check
+.PHONY: build env kernel clean disasm disasm-vim run-inner gdbserver gdbclient qemu-version-checknt qemu-version-check

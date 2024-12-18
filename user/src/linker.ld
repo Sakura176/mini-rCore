@@ -1,48 +1,35 @@
 OUTPUT_ARCH(riscv)
 ENTRY(_start)
-BASE_ADDRES = 0x80200000;
+
+BASE_ADDRESS = 0x80400000;
 
 SECTIONS
 {
-  . = BASE_ADDRES;
-  skernel = .;
-
-  stext = .;
+  . = BASE_ADDRESS;
+  /* 代码区 */
   .text : {
     *(.text.entry)
     *(.text .text.*)
   }
-
-  . = ALIGN(4K);
-  etext = .;
-  srodata = .;
+  /* 常量区 */
   .rodata : {
     *(.rodata .rodata.*)
     *(.srodata .srodata.*)
   }
-
-  . = ALIGN(4K);
-  erodata = .;
-  sdata = .;
+  /* 全局区（已初始化） */
   .data : {
     *(.data .data.*)
     *(.sdata .sdata.*)
   }
-
-  . = ALIGN(4K);
-  edata = .;
+  /* 全局区（未初始化） */
   .bss : {
-    *(.bss.stack)
-    sbss = .;
+    start_bss = .;
     *(.bss .bss.*)
     *(.sbss .sbss.*)
+    end_bss = .;
   }
-
-  . = ALIGN(4K);
-  ebss = .;
-  ekernel = .;
-
   /DISCARD/ : {
-    *(.eh_frame)
+      *(.eh_frame)
+      *(.debug*)
   }
 }
