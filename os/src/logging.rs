@@ -1,4 +1,5 @@
 #[warn(dead_code)]
+use crate::println;
 use log::{self, Level, LevelFilter, Log, Metadata, Record};
 
 // 日志结构，记录日志相关信息

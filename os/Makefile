@@ -58,7 +58,8 @@ run: run-inner
 QEMU_ARGS := -machine virt \
 			 -nographic \
 			 -bios $(BOOTLOADER) \
-			 -device loader,file=$(KERNEL_BIN),addr=$(KERNEL_ENTRY_PA)
+			 -device loader,file=$(KERNEL_BIN),addr=$(KERNEL_ENTRY_PA) \
+			 -gdb tcp::1235
 
 QEMU_NAME := qemu-system-riscv64
 qemu-version-check:
@@ -69,14 +70,14 @@ run-inner: qemu-version-check build
 
 debug: qemu-version-check build
 	@tmux new-session -d \
-		"qemu-system-riscv64 $(QEMU_ARGS) -s -S" && \
-		tmux split-window -h "riscv64-unknown-elf-gdb -ex 'file $(KERNEL_ELF)' -ex 'set arch riscv:rv64' -ex 'target remote localhost:1234'" && \
+		"qemu-system-riscv64 $(QEMU_ARGS) -S" && \
+		tmux split-window -h "riscv64-unknown-elf-gdb -ex 'file $(KERNEL_ELF)' -ex 'set arch riscv:rv64' -ex 'target remote localhost:1235'" && \
 		tmux -2 attach-session -d
 
 gdbserver: qemu-version-check build
-	@qemu-system-riscv64 $(QEMU_ARGS) -s -S
+	@qemu-system-riscv64 $(QEMU_ARGS) -S
 
 gdbclient:
-	@riscv64-unknown-elf-gdb -ex 'file $(KERNEL_ELF)' -ex 'set arch riscv:rv64' -ex 'target remote localhost:1234'
+	@riscv64-unknown-elf-gdb -ex 'file $(KERNEL_ELF)' -ex 'set arch riscv:rv64' -ex 'target remote localhost:1235'
 
 .PHONY: build env kernel clean disasm disasm-vim run-inner gdbserver gdbclient qemu-version-checknt qemu-version-check

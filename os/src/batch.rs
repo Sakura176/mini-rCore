@@ -1,6 +1,8 @@
 // os/src/batch.rs
 
 use crate::sync::UPSafeCell;
+use crate::trap::TrapContext;
+use crate::println;
 use core::arch::asm;
 use core::{u8, usize};
 use lazy_static::*;
@@ -19,6 +21,21 @@ struct KernelStack {
 #[repr(align(4096))]
 struct UserStack {
     data: [u8; USER_STACK_SIZE],
+}
+
+impl KernelStack {
+    fn get_sp(&self) -> usize {
+        self.data.as_ptr() as usize + KERNEL_STACK_SIZE
+    }
+
+    fn push_context(&self, cx: TrapContext) -> &'static mut TrapContext {
+        let cx_ptr = (self.get_sp() - core::mem::size_of::<TrapContext>())
+            as *mut TrapContext;
+        unsafe {
+            *cx_ptr = cx;
+        }
+        unsafe { cx_ptr.as_mut().unwrap() }
+    }
 }
 
 impl UserStack {
@@ -112,6 +129,16 @@ pub fn run_next_app() -> ! {
     }
     app_manager.move_to_next_app();
     drop(app_manager);
+
+    extern "C" {
+        fn __restore(cx_addr: usize);
+    }
+    unsafe {
+        __restore(KERNER_STACK.push_context(TrapContext::app_init_context(
+            APP_BASE_ADDRESS,
+            USER_STACK.get_sp(),
+        )) as *const _ as usize);
+    }
 
     panic!("Unreachable in batch::run_current_app!");
 }

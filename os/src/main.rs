@@ -1,17 +1,17 @@
 /*
  * The main module
  */
-
 #![no_main]
 #![no_std]
-#![feature(panic_info_message)]
+#[macro_use]
+mod console;
 mod lang_items;
 mod sbi;
 mod sync;
+pub mod syscall;
 pub mod trap;
 
-#[macro_use]
-mod console;
+
 mod logging;
 
 use core::arch::global_asm;
@@ -61,6 +61,7 @@ pub fn rust_main() -> ! {
         boot_stack_top as usize, boot_stack_lower_bound as usize
     );
     error!("[kernel] .bss [{:#x}, {:#x})", sbss as usize, ebss as usize);
-    sbi::shutdown(false);
-    // panic!("Shutdown machine!");
+    trap::init();
+    batch::init();
+    batch::run_next_app();
 }

@@ -7,6 +7,7 @@ SECTIONS
   . = BASE_ADDRES;
   skernel = .;
 
+  # 代码段
   stext = .;
   .text : {
     *(.text.entry)
