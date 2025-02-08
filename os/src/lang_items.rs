@@ -1,4 +1,4 @@
-use crate::{error, sbi::shutdown};
+use crate::{error, sbi::shutdown, stack_trace::print_stack_trace};
 use core::panic::PanicInfo;
 
 #[panic_handler]
@@ -16,5 +16,6 @@ fn panic(info: &PanicInfo) -> ! {
         // 无值，仅打印崩溃信息
         error!("[kernel] Paniced: {}", info.message());
     }
+    unsafe { print_stack_trace();}
     shutdown(true);
 }
