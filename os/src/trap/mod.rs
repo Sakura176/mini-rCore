@@ -1,9 +1,10 @@
 mod context;
 
-use crate::batch::run_next_app;
 use crate::global_asm;
 use crate::println;
 use crate::syscall::syscall;
+use crate::task::exit_current_and_run_next;
+use log::debug;
 use riscv::register::{
     mtvec::TrapMode,
     scause::{self, Exception, Trap},
@@ -23,10 +24,12 @@ pub fn init() {
 
 #[no_mangle]
 pub fn trap_handler(cx: &mut TrapContext) -> &mut TrapContext {
+    debug!("into trap_handler!");
     let scause = scause::read();
     let stval = stval::read();
     match scause.cause() {
         Trap::Exception(Exception::UserEnvCall) => {
+            debug!("UserEnvCall a17:{}", cx.x[17]);
             cx.sepc += 4;
             cx.x[10] =
                 syscall(cx.x[17], [cx.x[10], cx.x[11], cx.x[12]]) as usize;
@@ -34,13 +37,15 @@ pub fn trap_handler(cx: &mut TrapContext) -> &mut TrapContext {
         Trap::Exception(Exception::StoreFault)
         | Trap::Exception(Exception::StorePageFault) => {
             println!("[kernel] PageFault in application, kernel killed it.");
-            run_next_app();
+            // run_next_app();
+            exit_current_and_run_next();
         }
         Trap::Exception(Exception::IllegalInstruction) => {
             println!(
                 "[kernel] IllegalInstruction in application, kernel killed it."
             );
-            run_next_app();
+            exit_current_and_run_next();
+            // run_next_app();
         }
         _ => {
             panic!(

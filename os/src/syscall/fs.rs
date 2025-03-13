@@ -1,9 +1,12 @@
 // os/src/syscall/fs.rs
 
+use log::debug;
+
 use crate::print;
 const FD_STDOUT: usize = 1;
 
 pub fn sys_write(fd: usize, buf: *const u8, len: usize) -> isize {
+    debug!("buf length {}", len);
     match fd {
         FD_STDOUT => {
             let slice = unsafe { core::slice::from_raw_parts(buf, len) };
