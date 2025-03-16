@@ -12,6 +12,7 @@ mod logging;
 mod sbi;
 mod stack_trace;
 mod sync;
+mod timer;
 pub mod syscall;
 pub mod task;
 pub mod trap;
@@ -40,6 +41,8 @@ pub fn rust_main() -> ! {
     info!("[kernel] hello, world!");
     trap::init();
     loader::load_apps();
+    trap::enable_timer_interrupt();
+    timer::set_next_trigger();
     task::run_first_task();
     panic!("unreachable in rust_main!");
     // batch::init();

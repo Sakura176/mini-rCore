@@ -5,8 +5,8 @@ QEMU_PATH=$(which $1)
 RET=$?
 MINIMUM_MAJOR_VERSION=7
 RED='\033[0;31m'
-GREEN='\033[0;32m'
-NC='\033[0m'
+GREEN="\033[0;32m"
+NC="\033[0m"
 if [ $RET != 0 ]
 then
     echo "$1 not found"

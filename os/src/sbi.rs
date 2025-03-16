@@ -19,3 +19,7 @@ pub fn shutdown(failure: bool) -> ! /* ! 表示发散函数，不返回任何值
     }
     unreachable!()
 }
+
+pub fn set_timer(timer: usize) {
+    sbi_rt::set_timer(timer as _);
+}
