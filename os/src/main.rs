@@ -1,5 +1,5 @@
-/*
- * The main module
+/*!
+ *  The main module
  */
 #![no_main]
 #![no_std]
@@ -12,9 +12,9 @@ mod logging;
 mod sbi;
 mod stack_trace;
 mod sync;
-mod timer;
 pub mod syscall;
 pub mod task;
+mod timer;
 pub mod trap;
 
 use core::arch::global_asm;
@@ -43,6 +43,7 @@ pub fn rust_main() -> ! {
     loader::load_apps();
     trap::enable_timer_interrupt();
     timer::set_next_trigger();
+    // 启动首个应用程序
     task::run_first_task();
     panic!("unreachable in rust_main!");
     // batch::init();

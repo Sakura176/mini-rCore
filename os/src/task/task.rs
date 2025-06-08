@@ -15,4 +15,6 @@ pub struct TaskControlBlock {
     pub task_status: TaskStatus,
     // 任务上下文
     pub task_cx: TaskContext,
+    pub user_time: usize,   // 用户态时间
+    pub kernel_time: usize  // 内核态时间
 }
