@@ -4,6 +4,8 @@
 > - 教程版本：[v3.6.0](https://github.com/rcore-os/rCore-Tutorial-Book-v3)  
 > - 代码仓库：[rCore-Tutorial-v3](https://github.com/rcore-os/rCore-Tutorial-v3)  
 > - Rust 工具链：`rustc 1.85.0-nightly (426d17342 2024-12-21)`
+> - 操作系统：`Arch Linux`
+> - 模拟器：`qemu-10.0.0`
 
 ## 目录
 - [1. 环境配置](#1-环境配置)
@@ -30,10 +32,11 @@ rustup target add riscv64gc-unknown-none-elf
 cargo --version
 rustc --version
 ```
+### qemu模拟器安装
+Arch上安装qemu模拟器比较简单，运行下述命令即可：
+```shell
+sudo pacman -S qemu-system-riscv
+```
 
-<a id="2-章节学习记录"></a>
-## 2. 章节学习记录
 
-### Ch1: 裸机执行环境
-`目标`:移除标准库依赖，建立裸机环境
 
