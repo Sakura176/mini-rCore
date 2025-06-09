@@ -11,19 +11,19 @@ SECTIONS
     *(.text.entry)
     *(.text .text.*)
   }
-  . = ALIGN(4K);
+  /* . = ALIGN(4K); */
   /* 常量区 */
   .rodata : {
     *(.rodata .rodata.*)
     *(.srodata .srodata.*)
   }
-  . = ALIGN(4K);
+  /* . = ALIGN(4K); */
   /* 全局区（已初始化） */
   .data : {
     *(.data .data.*)
     *(.sdata .sdata.*)
   }
-  . = ALIGN(4K);
+  /* . = ALIGN(4K); */
   /* 全局区（未初始化） */
   .bss : {
     start_bss = .;
