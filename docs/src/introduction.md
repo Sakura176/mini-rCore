@@ -1,14 +1,4 @@
----
-title: rCore 操作系统学习
-description: rCore 操作系统学习，记录操作系统相关知识，以及编程环境的配置流程。
-
-categories:
-- 操作系统
-
-tags:
-- Rust
-- RISC-V
----
+# rCore学习文档
 
 > **环境信息**  
 > - 教程版本：[v3.6.0](https://github.com/rcore-os/rCore-Tutorial-Book-v3)  

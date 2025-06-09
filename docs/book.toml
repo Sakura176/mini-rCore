@@ -1,0 +1,9 @@
+[book]
+title = "mini-rCore 学习文档"
+authors = ["Your Name"]
+language = "zh-CN"
+multilingual = false
+
+[output.html]
+default-theme = "ayu"
+mathjax-support = true
