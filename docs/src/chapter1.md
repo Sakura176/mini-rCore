@@ -1,3 +1,8 @@
+---
+layout: post
+mermaid: true
+---
+
 # 第一章：启动流程与裸机环境构建
 
 > - **实验日期**: 2025-06-09
@@ -60,7 +65,9 @@ sequenceDiagram
 # 创建项目
 cargo new mini-rCore
 cd mini-rCore
+```
 
+```toml
 # 配置Cargo.toml
 [package]
 name = "mini-rCore"
