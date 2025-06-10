@@ -3,8 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Page not found - mini-rCore 学习文档</title>
-        <base href="/">
+        <title>第一章 - mini-rCore 学习文档</title>
 
 
         <!-- Custom HTML head -->
@@ -169,13 +168,115 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="document-not-found-404"><a class="header" href="#document-not-found-404">Document not found (404)</a></h1>
-<p>This URL is invalid, sorry. Please use the navigation bar or search to continue.</p>
+                        <h1 id="第一章启动流程与裸机环境构建"><a class="header" href="#第一章启动流程与裸机环境构建">第一章：启动流程与裸机环境构建</a></h1>
+<blockquote>
+<ul>
+<li><strong>实验日期</strong>: 2025-06-09</li>
+<li><strong>代码版本</strong>: rCore-Tutorial v3 <a href="https://github.com/rcore-os/rCore-Tutorial-v3/commit/d7f2a1b">d7f2a1b</a></li>
+<li><strong>QEMU版本</strong>: 10.0.0</li>
+<li><strong>实验环境</strong>: Arch Linux, Rust nightly-2024-03-05</li>
+</ul>
+</blockquote>
+<h2 id="目录"><a class="header" href="#目录">目录</a></h2>
+<ul>
+<li><a href="#11-%E6%A0%B8%E5%BF%83%E7%9B%AE%E6%A0%87">1.1 核心目标</a></li>
+<li><a href="#12-%E5%85%B3%E9%94%AE%E6%AD%A5%E9%AA%A4">1.2 关键步骤</a></li>
+<li><a href="#13-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0">1.3 代码实现</a></li>
+<li><a href="#14-%E5%AE%9E%E9%AA%8C%E9%AA%8C%E8%AF%81">1.4 实验验证</a></li>
+<li><a href="#15-%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5">1.5 问题排查</a></li>
+<li><a href="#16-%E7%9F%A5%E8%AF%86%E6%8B%93%E5%B1%95">1.6 知识拓展</a></li>
+</ul>
+<hr />
+<p><a id="11-核心目标"></a></p>
+<h2 id="11-核心目标"><a class="header" href="#11-核心目标">1.1 核心目标</a></h2>
+<ol>
+<li>建立裸机运行环境</li>
+<li>移除标准库依赖</li>
+<li>实现基本输出功能</li>
+<li>构建最小化内核入口</li>
+<li>实现系统关机功能</li>
+</ol>
+<hr />
+<p><a id="12-关键步骤"></a></p>
+<h2 id="12-关键步骤"><a class="header" href="#12-关键步骤">1.2 关键步骤</a></h2>
+<h3 id="启动流程概览"><a class="header" href="#启动流程概览">启动流程概览</a></h3>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant BIOS
+    participant Bootloader
+    participant Kernel
+    participant SBI
+    
+    BIOS-&gt;&gt;Bootloader: 加载并执行
+    Bootloader-&gt;&gt;SBI: 初始化硬件
+    SBI-&gt;&gt;Kernel: 移交控制权
+    Kernel-&gt;&gt;Kernel: 初始化基本环境
+    Kernel-&gt;&gt;SBI: 关机请求
+    SBI-&gt;&gt;Hardware: 系统关机
+</code></pre>
+<h4 id="开发步骤"><a class="header" href="#开发步骤">开发步骤</a></h4>
+<ol>
+<li>创建裸机项目结构</li>
+<li>配置no_std环境</li>
+<li>实现panic处理程序</li>
+<li>构建内核入口点</li>
+<li>实现SBI封装调用</li>
+<li>添加基本输出功能</li>
+</ol>
+<p><a id="13-代码实现"></a></p>
+<h2 id="13-代码实现"><a class="header" href="#13-代码实现">1.3 代码实现</a></h2>
+<ol>
+<li>项目初始化</li>
+</ol>
+<pre><code class="language-Bash"># 创建项目
+cargo new mini-rCore
+cd mini-rCore
+
+# 配置Cargo.toml
+[package]
+name = "mini-rCore"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+riscv = { git = "https://github.com/rcore-os/riscv", rev = "340e5bf" }
+</code></pre>
+<ol start="2">
+<li>裸机入口配置</li>
+<li>SBI调用封装</li>
+<li>基本输出实现</li>
+</ol>
+<p><a id="14-实验验证"></a></p>
+<h2 id="14-实验验证"><a class="header" href="#14-实验验证">1.4 实验验证</a></h2>
+<h3 id="测试代码"><a class="header" href="#测试代码">测试代码</a></h3>
+<h3 id="输出"><a class="header" href="#输出">输出</a></h3>
+<h2 id="15-问题排查"><a class="header" href="#15-问题排查">1.5 问题排查</a></h2>
+<h2 id="16-知识拓展"><a class="header" href="#16-知识拓展">1.6 知识拓展</a></h2>
+<h2 id="本章总结"><a class="header" href="#本章总结">本章总结</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>关键概念</th><th>实现要点</th><th>代码位置</th></tr></thead><tbody>
+<tr><td>裸机环境</td><td>移除标准库依赖</td><td>Cargo.toml</td></tr>
+<tr><td>内核入口</td><td>_start函数定义</td><td>src/main.rs</td></tr>
+<tr><td>基本输出</td><td>SBI控制台封装</td><td>src/sbi.rs</td></tr>
+<tr><td>内存初始化</td><td>.bss段清零操作</td><td>src/main.rs</td></tr>
+<tr><td>系统关机</td><td>SBI_SHUTDOWN调用</td><td>src/sbi.rs</td></tr>
+</tbody></table>
+</div>
+<h2 id="下一步计划"><a class="header" href="#下一步计划">下一步计划:</a></h2>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+第二章: 批处理系统实现</li>
+<li><input disabled="" type="checkbox" checked=""/>
+添加应用加载功能</li>
+<li><input disabled="" type="checkbox" checked=""/>
+实现特权级切换机制</li>
+</ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="introduction.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
 
 
                         <div style="clear: both"></div>
@@ -184,6 +285,9 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="introduction.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
 
             </nav>
 

@@ -175,6 +175,8 @@
 <li>教程版本：<a href="https://github.com/rcore-os/rCore-Tutorial-Book-v3">v3.6.0</a></li>
 <li>代码仓库：<a href="https://github.com/rcore-os/rCore-Tutorial-v3">rCore-Tutorial-v3</a></li>
 <li>Rust 工具链：<code>rustc 1.85.0-nightly (426d17342 2024-12-21)</code></li>
+<li>操作系统：<code>Arch Linux</code></li>
+<li>模拟器：<code>qemu-10.0.0</code></li>
 </ul>
 </blockquote>
 <h2 id="目录"><a class="header" href="#目录">目录</a></h2>
@@ -200,16 +202,19 @@ rustup target add riscv64gc-unknown-none-elf
 cargo --version
 rustc --version
 </code></pre>
-<p><a id="2-章节学习记录"></a></p>
-<h2 id="2-章节学习记录"><a class="header" href="#2-章节学习记录">2. 章节学习记录</a></h2>
-<h3 id="ch1-裸机执行环境"><a class="header" href="#ch1-裸机执行环境">Ch1: 裸机执行环境</a></h3>
-<p><code>目标</code>:移除标准库依赖，建立裸机环境</p>
+<h3 id="qemu模拟器安装"><a class="header" href="#qemu模拟器安装">qemu模拟器安装</a></h3>
+<p>Arch上安装qemu模拟器比较简单，运行下述命令即可：</p>
+<pre><code class="language-shell">sudo pacman -S qemu-system-riscv
+</code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
 
+                            <a rel="next prefetch" href="chapter1.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
 
                         <div style="clear: both"></div>
                     </nav>
@@ -218,10 +223,29 @@ rustc --version
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
 
+                    <a rel="next prefetch" href="chapter1.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
             </nav>
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

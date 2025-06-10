@@ -1,9 +1,9 @@
 # 第一章：启动流程与裸机环境构建
 
-> **实验日期**: {{2025-06-09}}  
-> **代码版本**: rCore-Tutorial v3 [d7f2a1b](https://github.com/rcore-os/rCore-Tutorial-v3/commit/d7f2a1b)  
-> **QEMU版本**: 10.0.0 
-> **实验环境**: Arch Linux, Rust nightly-2024-03-05
+> - **实验日期**: 2025-06-09
+> - **代码版本**: rCore-Tutorial v3 [d7f2a1b](https://github.com/rcore-os/rCore-Tutorial-v3/commit/d7f2a1b)  
+> - **QEMU版本**: 10.0.0   
+> - **实验环境**: Arch Linux, Rust nightly-2024-03-05
 
 ## 目录
 - [1.1 核心目标](#11-核心目标)
@@ -56,6 +56,20 @@ sequenceDiagram
 <a id="13-代码实现"></a>
 ## 1.3 代码实现
 1. 项目初始化
+```Bash
+# 创建项目
+cargo new mini-rCore
+cd mini-rCore
+
+# 配置Cargo.toml
+[package]
+name = "mini-rCore"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+riscv = { git = "https://github.com/rcore-os/riscv", rev = "340e5bf" }
+```
 2. 裸机入口配置
 3. SBI调用封装
 4. 基本输出实现
