@@ -200,7 +200,7 @@
 <p><a id="12-关键步骤"></a></p>
 <h2 id="12-关键步骤"><a class="header" href="#12-关键步骤">1.2 关键步骤</a></h2>
 <h3 id="启动流程概览"><a class="header" href="#启动流程概览">启动流程概览</a></h3>
-<pre><code class="language-mermaid">sequenceDiagram
+<pre class="mermaid">sequenceDiagram
     participant BIOS
     participant Bootloader
     participant Kernel
@@ -212,7 +212,7 @@
     Kernel-&gt;&gt;Kernel: 初始化基本环境
     Kernel-&gt;&gt;SBI: 关机请求
     SBI-&gt;&gt;Hardware: 系统关机
-</code></pre>
+</pre>
 <h4 id="开发步骤"><a class="header" href="#开发步骤">开发步骤</a></h4>
 <ol>
 <li>创建裸机项目结构</li>
@@ -225,13 +225,13 @@
 <p><a id="13-代码实现"></a></p>
 <h2 id="13-代码实现"><a class="header" href="#13-代码实现">1.3 代码实现</a></h2>
 <ol>
-<li>项目初始化</li>
-</ol>
+<li>
+<p>项目初始化</p>
 <pre><code class="language-Bash"># 创建项目
 cargo new mini-rCore
 cd mini-rCore
-
-# 配置Cargo.toml
+</code></pre>
+<pre><code class="language-toml"># 配置Cargo.toml
 [package]
 name = "mini-rCore"
 version = "0.1.0"
@@ -240,10 +240,54 @@ edition = "2021"
 [dependencies]
 riscv = { git = "https://github.com/rcore-os/riscv", rev = "340e5bf" }
 </code></pre>
-<ol start="2">
-<li>裸机入口配置</li>
-<li>SBI调用封装</li>
-<li>基本输出实现</li>
+</li>
+<li>
+<p>裸机入口配置</p>
+<pre><code class="language-Rust">// os/src/main.rs
+#![no_std] // 不使用rust标准库
+#![no_main]// 取消主函数，避免初始化主函数时启动标准库内函数
+
+// 自定义主函数入口，由entry.asm跳转
+pub fn rust_main() -&gt; ! {    
+}
+
+</code></pre>
+<pre><code class="language-asm"># 设置内核执行环境
+# 操作系统内核入口点的汇编代码
+# 主要负责初始化栈指针并跳转到Rust主函数
+
+### 定义代码段（可执行代码部分）
+    .section .text.entry
+    .globl _start
+_start:
+    # 栈顶指针存入sp寄存器
+    la sp, boot_stack_top
+    call rust_main
+
+### 定义未初始化的栈内存空间
+    .section .bss.stack
+    .globl boot_stack_lower_bound
+boot_stack_lower_bound:
+    .space 4096 * 16
+    .globl boot_stack_top
+boot_stack_top:
+</code></pre>
+</li>
+<li>
+<p>SBI调用封装
+封装<code>panic!</code>宏，<code>panic!</code>宏在Rust标准库中有具体实现，用于在程序出错时打印出错位置和原因并杀死当前应用。移除标准库后需要实现简易版本来通过测试</p>
+<pre><code class="language-Rust">// os/src/lang_item.rs
+use core::panic::PanicIfoo;
+
+#[panic_handler]
+fn panic(_info: &amp;PanicInfo) -&gt; ! {
+    loop {}
+}
+</code></pre>
+</li>
+<li>
+<p>基本输出实现</p>
+</li>
 </ol>
 <p><a id="14-实验验证"></a></p>
 <h2 id="14-实验验证"><a class="header" href="#14-实验验证">1.4 实验验证</a></h2>
@@ -278,6 +322,9 @@ riscv = { git = "https://github.com/rcore-os/riscv", rev = "340e5bf" }
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
+                            <a rel="next prefetch" href="chapter4.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
 
                         <div style="clear: both"></div>
                     </nav>
@@ -289,6 +336,9 @@ riscv = { git = "https://github.com/rcore-os/riscv", rev = "340e5bf" }
                         <i class="fa fa-angle-left"></i>
                     </a>
 
+                    <a rel="next prefetch" href="chapter4.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
             </nav>
 
         </div>
@@ -326,6 +376,8 @@ riscv = { git = "https://github.com/rcore-os/riscv", rev = "340e5bf" }
         <script src="book.js"></script>
 
         <!-- Custom JS scripts -->
+        <script src="mermaid.min.js"></script>
+        <script src="mermaid-init.js"></script>
 
 
     </div>

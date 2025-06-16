@@ -1,14 +1,21 @@
 /*!
  *  The main module
  */
+// #![deny(missing_docs)]
+// #![deny(warnings)]
 #![no_main]
 #![no_std]
+#![feature(alloc_error_handler)]
+
+extern crate alloc;
+
 #[macro_use]
 mod console;
 pub mod config;
 mod lang_items;
 mod loader;
 mod logging;
+mod mm;
 mod sbi;
 mod stack_trace;
 mod sync;
@@ -39,6 +46,9 @@ pub fn rust_main() -> ! {
     clear_bss();
     logging::init();
     info!("[kernel] hello, world!");
+    mm::init();
+    info!("[kernel] mm inited!");
+    mm::test();
     trap::init();
     loader::load_apps();
     trap::enable_timer_interrupt();
