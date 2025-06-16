@@ -34,57 +34,51 @@
 
 <a id="13-代码实现"></a>
 ## 1.3 代码实现
-1. 项目初始化
-    ```Bash
-    # 创建项目
-    cargo new mini-rCore
-    cd mini-rCore
-    ```
-
+1. 配置改动
     ```toml
-    # 配置Cargo.toml
     [package]
-    name = "mini-rCore"
+    name = "os"
     version = "0.1.0"
     edition = "2021"
 
     [dependencies]
-    riscv = { git = "https://github.com/rcore-os/riscv", rev = "340e5bf" }
+    log = "0.4"
+    sbi-rt = { version = "0.0.3", features = ["legacy"] }
+    lazy_static = { version = "1.4.0", features = ["spin_no_std"] }
+    riscv = { git = "https://github.com/rcore-os/riscv", features = ["inline-asm"] }
+    buddy_system_allocator = "0.11.0" # 实验时使用版本，高于文档中版本，需要一定修改
+
+    [profile.release]
+    debug = true
     ```
-2. 裸机入口配置
+2. 动态内存分配代码
     ```Rust
     // os/src/main.rs
-    #![no_std] // 不使用rust标准库
-    #![no_main]// 取消主函数，避免初始化主函数时启动标准库内函数
+    #![no_main]
+    #![no_std]
+    #![feature(alloc_error_handler)]
 
-    // 自定义主函数入口，由entry.asm跳转
-    pub fn rust_main() -> ! {    
+    extern crate alloc;
+
+    // os/src/mm/heap_allocator.rs
+    // TODO: 实验使用版本需添加泛型参数，该参数实际意义暂未弄懂
+    #[global_allocator]
+    static HEAP_ALLOCATOR: LockedHeap<32> = LockedHeap::empty();
+
+    pub fn init_heap() {
+        debug!("init_heap begin!");
+        unsafe {
+            // NOTE: 未知函数需要查看函数声明和源码，不要轻易相信ds输出
+            HEAP_ALLOCATOR.lock().init(
+                // 新版本rust按文档写法无法通过编译，需按下述方法获取裸指针
+                ptr::addr_of_mut!(HEAP_SPACE) as *mut u8 as usize,
+                KERNEL_HEAP_SIZE,
+            );
+        }
+        debug!("init_heap end!");
     }
 
     ```
-
-    ```asm
-    # 设置内核执行环境
-    # 操作系统内核入口点的汇编代码
-    # 主要负责初始化栈指针并跳转到Rust主函数
-
-    ### 定义代码段（可执行代码部分）
-        .section .text.entry
-        .globl _start
-    _start:
-        # 栈顶指针存入sp寄存器
-        la sp, boot_stack_top
-        call rust_main
-
-    ### 定义未初始化的栈内存空间
-        .section .bss.stack
-        .globl boot_stack_lower_bound
-    boot_stack_lower_bound:
-        .space 4096 * 16
-        .globl boot_stack_top
-    boot_stack_top:
-    ```
-
 3. SBI调用封装
     封装`panic!`宏，`panic!`宏在Rust标准库中有具体实现，用于在程序出错时打印出错位置和原因并杀死当前应用。移除标准库后需要实现简易版本来通过测试
     ```Rust
