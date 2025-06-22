@@ -32,11 +32,15 @@ pub fn handle_alloc_error(layout: core::alloc::Layout) -> ! {
 
 #[allow(unused)]
 pub fn heap_test() {
+    use alloc::boxed::Box; // 用于将数据存储在堆上
     use alloc::vec::Vec;
     extern "C" {
         fn sbss();
         fn ebss();
     }
+    let a = Box::new(5);
+    assert_eq!(*a, 5);
+    drop(a);
     let mut v: Vec<usize> = Vec::new();
     for i in 0..500 {
         v.push(i);

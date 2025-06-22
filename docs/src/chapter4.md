@@ -96,7 +96,26 @@
 
 <a id="14-实验验证"></a>
 ## 1.4 实验验证
-### 测试代码
+
+### 测试代码  
+1. 动态内存分配测试代码  
+
+    ```Rust
+    pub struct Heap<const ORDER: usize> {
+        // buddy system with max order of `ORDER`
+        free_list: [linked_list::LinkedList; ORDER],
+
+        // statistics
+        user: usize,
+        allocated: usize,
+        total: usize,
+    }
+    ```
+2. 地址也页表转换测试代码
+
+    ```Rust
+        
+    ```
 ### 输出
 ## 1.5 问题排查
 ## 1.6 知识拓展
